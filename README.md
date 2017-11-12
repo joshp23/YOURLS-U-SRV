@@ -71,6 +71,7 @@ To add a new filetype, just add a new case to the Mime Types section of `srv.php
 * [YOURLS-IQRCodes](https://github.com/joshp23/YOURLS-IQRCodes) - To serve code images
 * [YOURLS-Compliance](https://github.com/joshp23/YOURLS-Compliance) - To retrieve Snapshot images
 * [YOURLS-rscrub](https://github.com/joshp23/YOURLS-rscrub) - To retrieve Snapshot images
+
 ===========================
 
     Copyright (C) 2016 - 2017 Josh Panter
