@@ -105,14 +105,21 @@ if (is_file($file)) {							// if the file exists at this location
  *
 */
 switch( $type ) {
-	case "jpg": $ctype="image/jpeg"; 	break;
-	case "png": $ctype="image/png"; 	break;
-	case "svg": $ctype="image/svg+xml"; break;
-	// The defualt case: nothing
-	default: break;
+	case "jpg": 
+		$ctype="image/jpeg";
+		break;
+	case "png": 
+		$ctype="image/png";
+		break;
+	case "svg": 
+		$ctype="image/svg+xml";
+		break;
+	default: 
+		$ctype="pronk";
+		break;
 }
 
-if($ctype == null) die('file type not supported, please check your configuration');
+if($ctype == "pronk") die('file type not supported, please check your configuration');
 
 header('Content-type: ' . $ctype);					// send the correct headers
 header('Expires: 0');								// .
