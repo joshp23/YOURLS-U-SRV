@@ -58,7 +58,7 @@ case 'ID_VALUE':
 #### File info
 The filename is set explicitly as a regular `GET` value.  
 Mime types must be set expllicitly in the script in order to set header information correctly, and are restricted as an extra security measure. 
-To add a new filetype, just add a new case to the Mime Types section of `srv.php`, check mime.md for an exhaustive (?) list of examples.
+To add a new filetype, just add a new case to the Mime Types section of `srv.php`, check MIMETYPES.md for an exhaustive (?) list of examples.
 * In order to allow the passing of a `tar.gz` file, add the following:
 		- 'case "gz": $ctype="application/x-gzip"; break;`
 
