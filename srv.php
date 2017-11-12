@@ -1,6 +1,6 @@
 <?php
 /*	
- *	U-SRV v 1.2.0
+ *	U-SRV v 1.2.1
  *		
  *	This is a universal file server (for YOURLS)
  *	by Josh Panter <joshu at unfettered dot net>
