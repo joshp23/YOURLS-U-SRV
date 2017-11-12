@@ -24,6 +24,8 @@ if( isset($_GET['id'])) {
 // get file name or die
 if( isset($_GET['fn'])) {
 	$fn = $_GET['fn'];
+	// strip path traversal characters - security
+	$fn = preg_replace('/^((\.*)(\/*))*/', '', $fn);
 } else {
 	die('FAIL: missing filename');
 }
@@ -89,10 +91,15 @@ switch ($id) {
 // work with the file
 $file = $path . '/' . $fn;
 
+// Compare result path to conf path - 2nd security check for path traversal
+$loc = pathinfo($file, PATHINFO_DIRNAME);
+if( $loc != $path ) die('FAIL: malformed request');
+
+// verify file
 if (is_file($file)) {							// if the file exists at this location
 	$type = pathinfo($fn, PATHINFO_EXTENSION);	// then get the file extention type
 } else {
-	die('file not found');						// or die
+	die('FAIL: file not found');				// or die
 }
 /*
  *  Mime Types
