@@ -1,14 +1,14 @@
 <?php
-/*	
- *	U-SRV v 1.2.1
- *		
- *	This is a universal file server (for YOURLS)
- *	by Josh Panter <joshu at unfettered dot net>
- *
+/*
+Plugin Name: U-SRV | helper file
+Plugin URI: https://github.com/joshp23/YOURLS-U-SRV
+Description: A universal file server for YOURLS | This is the server
+Version: 2.0.0
+Author: Josh Panter
+Author URI: https://unfettered.net
 */
 
 // Verify that all parameters have been set
-
 // get access key or die
 if( isset($_GET['key'])) {
 	$key = $_GET['key'];
@@ -48,47 +48,69 @@ if($lock !== $key) die('FAIL: bad access key');
  *	Check sender and file store location
  *
  *	To add your plugin or script, add a new case below
- *	with an arbitrary ID and file store location. 
- *	Just send the same ID in the GET request.
+ *	with an arbitrary ID and file store location and send
+ *	the same ID in the GET request.
  *
- *	Ex. In this example you store the cache location in the DB
- *	as a regular option:
+ * 	Ex. In this example the cache location is stored in the DB
+ *	as a YOURLS option. Note the default option name structure:
  *	
  *		case 'ID_VALUE':
- *			$path = yourls_get_option('YOUR_CACHE_PATH');
+ *			$path = yourls_get_option('ID_VALUE_usrv_loc');
  *			break;
  *
- *	Ex. In this example you just store the filepath here:
+ *	Ex. In this example the filepath is just strored here:
  *	
  * 		case 'ID_VALUE':
  *			$path = '/path/to/your/files/');
  *			break;
 */
 
+$path = yourls_get_option('usrv_cache_loc');
+if($path == null) $path = dirname(YOURLS_ABSPATH)."/YOURLS_CACHE";
+$dir = yourls_get_option( $id.'_usrv_dir' );
+
 switch ($id) {
 
+	case 'usrv_files':
+		$path = $path.'/fu';
+		break;
+
 	case 'snapshot':
-		$path = yourls_get_option('snapshot_cache_path');
-		if($path == null) $path = 'user/cache/preview';
-		$path = YOURLS_ABSPATH . '/' . $path;
+		$pfile = YOURLS_ABSPATH.'/user/plugins/snapshot/plugin.php';
+		$data = yourls_get_plugin_data( $pfile );
+		$ver = $data['Version'];
+		if (version_compare($ver, '3.0.0') >= 0) {
+			if($dir == null) $dir = 'preview';
+			$path = $path.'/'.$dir;
+		} else {
+			$path = yourls_get_option('snapshot_cache_path');
+			if($path == null) $path = 'user/cache/preview';
+			$path = YOURLS_ABSPATH.'/'.$path;
+		}
 		break;
 		
 	case 'snapshot-alt':
-		$path = 'user/plugins/snapshot/assets';
-		$path = YOURLS_ABSPATH . '/' . $path;
+		$path = $path.'/user/plugins/snapshot/assets';
 		break;
 		
 	case 'iqrcodes':
-		$path = yourls_get_option('iqrcodes_cache_loc');
-		if($path == null) $path = 'user/cache/qr';
-		$path = YOURLS_ABSPATH . '/' . $path;
+		$pfile = YOURLS_ABSPATH.'/user/plugins/iqrcodes/plugin.php';
+		$data = yourls_get_plugin_data( $pfile );
+		$ver = $data['Version'];
+		if (version_compare($ver, '2.0.0') >= 0) {
+			if($dir == null) $dir = 'qr';
+			$path = $path .'/'. $dir;
+		} else {
+			$path = yourls_get_option('iqrcodes_cache_loc');
+			if($path == null) $path = 'user/cache/qr';
+			$path = YOURLS_ABSPATH.'/'.$path;
+		}
 		break;
 		
 	default:
-		die('not a valid id');
+		$path = $path.'/'.$dir;
 }
-
-// work with the file
+// Work with the file
 $file = $path . '/' . $fn;
 
 // Compare result path to conf path - 2nd security check for path traversal
@@ -120,6 +142,9 @@ switch( $type ) {
 		break;
 	case "svg": 
 		$ctype="image/svg+xml";
+		break;
+	case "zip": 
+		$ctype="application/zip"; 									
 		break;
 	default: 
 		$ctype="pronk";

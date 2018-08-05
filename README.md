@@ -1,7 +1,7 @@
 # U-SRV
-Universal file server for YOURLS plugin development
+Universal file server and file storage service for YOURLS
 
-Provides links to files while obfuscating filesystem paths, allowing easy, secure access to files between plugins.
+Provides links to files while obfuscating filesystem paths, allowing easy, secure access to files between plugins or from 3rd party scripts.
 
 ## In detail:
 Given the following parameters:
@@ -13,12 +13,22 @@ Given the following parameters:
 This script will:
 
 1. Retrieve the file store location per plugin, can be from a database
-2. Retrieve a particular file from the store (in or out of the server doc root)
+2. Retrieve a particular file from the store (in or preferably out of the server doc root)
 3. Return a time limited link to that file
 
 ## Use (with YOURLS)
-1. Copy or link `srv.php` to `/path/to/YOURLS/pages/`
+1. Copy the `usrv` folder of this repo into `/path/to/YOURLS/user/plugins/`
+2. Enable the plugin as any other.
+
+The script should automatically
+1. Copy  `srv.php` to `/path/to/YOURLS/pages/`
+2. Install a database table to store uploaded file data
+3. Create the default cache location
+
+At once you should be able to
+1. Upload files via a web browser that will be accessible via U-SRV
 2. Call U-SRV with a `GET` request from `https://sho.rt/srv/`
+3. Use any plugin that utilizes U-SRV (listed below)
 
 ### Parameters
 To be sent as a `GET` request. All parameters are required.
@@ -63,18 +73,25 @@ To add a new filetype, just add a new case to the Mime Types section of `srv.php
 		- 'case "gz": $ctype="application/x-gzip"; break;`
 
 ### Use NOTES:
+* v2.0.0 and on is a complete rewrite. It is still backwards compatible with plugins that have not yet been updated.
 * U-SRV is pre-configured for the default filetypes used by the YOURLS [IQRCodes](https://github.com/joshp23/YOURLS-IQRCodes) and [Snapshot Visual Preview](https://github.com/joshp23/YOURLS-Snapshot) plugins. 
 * As should be obviouse, this script can be easily modified for use outside of the YOURLS environment.
+* Increasing apache's SSL Renegotiation Buffer Size may save you a headache. Simply add something like the following to the host file:
+```
+<location '/admin/plugins.php' >
+	  	SSLRenegBufferSize 10486000
+</location>
+```
 
 ## Plugins using this script
 * [YOURLS-Snapshot](https://github.com/joshp23/YOURLS-Snapshot) - To serve images
 * [YOURLS-IQRCodes](https://github.com/joshp23/YOURLS-IQRCodes) - To serve code images
 * [YOURLS-Compliance](https://github.com/joshp23/YOURLS-Compliance) - To retrieve Snapshot images
-* [YOURLS-rscrub](https://github.com/joshp23/YOURLS-rscrub) - To retrieve Snapshot images
+* [YOURLS-rscrub](https://github.com/joshp23/YOURLS-rscrub) - To retrieve Snapshot images and deliver `rscrub.js`
 
 ===========================
 
-    Copyright (C) 2016 - 2017 Josh Panter
+    Copyright (C) 2016 - 2018 Josh Panter
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
