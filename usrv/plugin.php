@@ -3,7 +3,7 @@
 Plugin Name: U-SRV
 Plugin URI: https://github.com/joshp23/YOURLS-U-SRV
 Description: A universal file server for YOURLS
-Version: 2.0.0
+Version: 2.0.1
 Author: Josh Panter
 Author URI: https://unfettered.net
 */
@@ -203,7 +203,7 @@ HTML;
 					</div>
 					<p>Resulting in:
 					<div style="padding-left: 10pt;">					
-						<code>$fn</code>.</p>
+						<code>$fn.zip</code></p>
 					</div>
 				</div>
 			
@@ -223,14 +223,11 @@ HTML;
 }
 // Maybe insert some JS and CSS files to head
 yourls_add_action( 'html_head', 'usrv_head' );
-function usrv_head() {
-	if ( defined('YOURLS_JP23_HEAD_FILES') == false ) {
-		define( 'YOURLS_JP23_HEAD_FILES', true );
+function usrv_head($context) {
+	if ( $context[0] == 'plugin_page_usrv' ) {
 		$home = YOURLS_SITE;
-		echo "\n<! --------------------------JP23_HEAD_FILES Start-------------------------- >\n";
 		echo "<link rel=\"stylesheet\" href=\"".$home."/css/infos.css?v=".YOURLS_VERSION."\" type=\"text/css\" media=\"screen\" />\n";
 		echo "<script src=\"".$home."/js/infos.js?v=".YOURLS_VERSION."\" type=\"text/javascript\"></script>\n";
-		echo "<! --------------------------JP23_HEAD_FILES END---------------------------- >\n";
 	}
 }
 // form submission
