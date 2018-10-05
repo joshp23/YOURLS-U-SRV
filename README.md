@@ -89,6 +89,11 @@ To add a new filetype, just add a new case to the Mime Types section of `srv.php
 * [YOURLS-Compliance](https://github.com/joshp23/YOURLS-Compliance) - To retrieve Snapshot images
 * [YOURLS-rscrub](https://github.com/joshp23/YOURLS-rscrub) - To retrieve Snapshot images and deliver `rscrub.js`
 
+### Support Dev
+All of my published code is developed and maintained in spare time, if you would like to support development of this, or any of my published code, I have set up a Liberpay account for just this purpose. Thank you.
+
+<noscript><a href="https://liberapay.com/joshu42/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
+
 ===========================
 
     Copyright (C) 2016 - 2018 Josh Panter
