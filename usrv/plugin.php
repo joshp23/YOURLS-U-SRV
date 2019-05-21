@@ -3,7 +3,7 @@
 Plugin Name: U-SRV
 Plugin URI: https://github.com/joshp23/YOURLS-U-SRV
 Description: A universal file server for YOURLS
-Version: 2.0.1
+Version: 2.1.0
 Author: Josh Panter
 Author URI: https://unfettered.net
 */
@@ -354,6 +354,17 @@ function usrv_mvdir( $old , $new ) {
 			return;
 	}
 }
+
+// Compatability with forward slashes in keyword
+yourls_add_action( 'pre_load_template', 'usrv_exclude' );
+function usrv_exclude( $request ) {
+	$cs = yourls_get_shorturl_charset();
+	if (strpos($cs, '/') !== false) {
+		$pg = explode('/',$request[0]);
+		if ( file_exists( YOURLS_PAGEDIR ."/".$pg[0].".php" ) )
+			yourls_page( $pg[0] );
+	}
+}
 /*
  *
  *	Up/Down
@@ -371,7 +382,7 @@ function usrv_activated() {
 	if ($init === false) {
 		// Create the init value
 		yourls_add_option('usrv_init', time());
-		// Create the expiry table
+		// Create the U-SRV table
 		$table_usrv  = "CREATE TABLE IF NOT EXISTS usrv (";
 		$table_usrv .= "name varchar(200) NOT NULL, ";
 		$table_usrv .= "hashname varchar(200), ";
@@ -387,7 +398,7 @@ function usrv_activated() {
 		yourls_update_option('usrv_init', time());
 		$init = yourls_get_option('usrv_init');
 		if ($init === false) {
-			die("Unable to properly enable expiry due an apparent problem with the database.");
+			die("Unable to properly enable U-SRV due an apparent problem with the database.");
 		}
 	}
 	
