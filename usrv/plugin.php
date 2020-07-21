@@ -3,7 +3,7 @@
 Plugin Name: U-SRV
 Plugin URI: https://github.com/joshp23/YOURLS-U-SRV
 Description: A universal file server for YOURLS
-Version: 2.1.0
+Version: 2.1.1
 Author: Josh Panter
 Author URI: https://unfettered.net
 */
@@ -117,7 +117,7 @@ HTML;
 					<h3>Checks</h3>
 					<p>SRV.php: 
 HTML;
-	$srvLoc = YOURLS_ABSPATH.'/pages/srv.php';
+	$srvLoc = YOURLS_ABSPATH.'/user/pages/srv.php';
 	if ( !file_exists( $srvLoc ) ) {
  		echo '<font color="red">srv.php is not in the "pages" directory!</font>';
 	} else { 
@@ -403,7 +403,7 @@ function usrv_activated() {
 	}
 	
 	// put SRV in place
-	$srvLoc = YOURLS_ABSPATH.'/pages/srv.php';
+	$srvLoc = YOURLS_ABSPATH.'/user/pages/srv.php';
 	if ( !file_exists( $srvLoc ) ) {
 		copy( 'assets/srv.php', $srvLoc );
 	} else { 
@@ -451,7 +451,7 @@ function usrv_deactivate() {
 		}
 	}
 	// remove srv.php
-	$srvLoc = YOURLS_ABSPATH.'/pages/srv.php';
+	$srvLoc = YOURLS_ABSPATH.'/user/pages/srv.php';
 	if ( file_exists( $srvLoc ) ) {
 		unlink( $srvLoc );
 	}

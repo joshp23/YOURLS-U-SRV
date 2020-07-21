@@ -21,7 +21,7 @@ This script will:
 2. Enable the plugin as any other.
 
 The script should automatically
-1. Copy  `srv.php` to `/path/to/YOURLS/pages/`
+1. Copy  `srv.php` to `/path/to/YOURLS/user/pages/`
 2. Install a database table to store uploaded file data
 3. Create the default cache location
 
@@ -73,6 +73,7 @@ To add a new filetype, just add a new case to the Mime Types section of `srv.php
 		- 'case "gz": $ctype="application/x-gzip"; break;`
 
 ### Use NOTES:
+* Compatability with YOURLS 1.7.9 + (tested against [this](https://github.com/YOURLS/YOURLS/commit/cab0c150a0ce2b0f8775a029c6b47fa98d69598b) commit)
 * v2.0.0 and on is a complete rewrite. It is still backwards compatible with plugins that have not yet been updated.
 * U-SRV is pre-configured for the default filetypes used by the YOURLS [IQRCodes](https://github.com/joshp23/YOURLS-IQRCodes) and [Snapshot Visual Preview](https://github.com/joshp23/YOURLS-Snapshot) plugins. 
 * As should be obviouse, this script can be easily modified for use outside of the YOURLS environment.
@@ -96,7 +97,7 @@ All of my published code is developed and maintained in spare time, if you would
 
 ===========================
 
-    Copyright (C) 2016 - 2018 Josh Panter
+    Copyright (C) 2016 Josh Panter
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
