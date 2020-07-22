@@ -3,11 +3,11 @@
 Plugin Name: U-SRV
 Plugin URI: https://github.com/joshp23/YOURLS-U-SRV
 Description: A universal file server for YOURLS
-Version: 2.3.0
+Version: 2.3.1
 Author: Josh Panter
 Author URI: https://unfettered.net
 */
-
+define( 'USRV_DB_UPDATE', false );
 // No direct call
 if( !defined( 'YOURLS_ABSPATH' ) ) die();
 
@@ -81,7 +81,7 @@ HTML;
 	}
 	// populate table rows with flag data if there is any
 	global $ydb;
-	$table = 'usrv';
+	$table = YOURLS_DB_PREFIX . 'usrv';
 	$sql = "SELECT * FROM `$table` ORDER BY name DESC";
 	$fuList = $ydb->fetchObjects($sql);
 	$found_rows = false;
@@ -295,7 +295,7 @@ function usrv_fu() {
 		$zip->close();
 
 		global $ydb;
-		$table = 'usrv';
+		$table = YOURLS_DB_PREFIX . 'usrv';
 		$binds = array('name' => $fuName, 'hashname' => $fuSave);
 		$sql = "INSERT INTO `$table`  (name, hashname) VALUES (:name, :hashname)";
 		$insert = $ydb->fetchAffected($sql, $binds);
@@ -321,7 +321,7 @@ function usrv_delete( $fn ) {
 		unlink( $filepath );
 
 	global $ydb;
-	$table = 'usrv';
+	$table = YOURLS_DB_PREFIX . 'usrv';
 	$binds = array('hashname' => $fn);
 	$sql = "DELETE FROM `$table`  WHERE hashname=:hashname";
 	$delete = $ydb->fetchAffected($sql, $binds);
@@ -372,19 +372,31 @@ function usrv_exclude( $request ) {
  *
 */
 // temporary update DB script
-yourls_add_action( 'plugins_loaded', 'usrv_update_DB' );
+if ( USRV_DB_UPDATE ) 
+	yourls_add_action( 'plugins_loaded', 'usrv_update_DB' );
 function usrv_update_DB () {
 	global $ydb;
 	$table = 'usrv';
-    	$sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES
-    		WHERE TABLE_NAME = '".$table."'
-    		AND ENGINE = 'MyISAM' LIMIT 1";
-	$results = $ydb->fetchObjects($sql);
-	if($results) {
-		foreach( $results as $result ) {
-			$fix = "ALTER TABLE `".$table."` ENGINE = INNODB;";
-			$ydb->fetchAffected($fix);
+	if ( YOURLS_DB_PREFIX ) {
+		try {
+			$sql = "DESCRIBE `".YOURLS_DB_PREFIX . $table."`";
+			$fix = $ydb->fetchAffected($sql);
+		} catch (PDOException $e) {
+			$sql = "RENAME TABLE `".$table."` TO  `".YOURLS_DB_PREFIX.$table."`";
+			$fix = $ydb->fetchAffected($sql);
 		}
+		
+		$table = YOURLS_DB_PREFIX . $table;
+	}
+	
+	try {
+	    	$sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES
+	    		WHERE TABLE_NAME = `".$table."`
+	    		AND ENGINE = 'INNODB' LIMIT 1";
+	    	$fix = $ydb->fetchAffected($sql);
+    	} catch (PDOException $e) {
+		$sql = "ALTER TABLE `".$table."` ENGINE = INNODB;";
+		$fix = $ydb->fetchAffected($sql);
 	}
 }
 // Create tables for this plugin when activated
@@ -444,7 +456,7 @@ function usrv_deactivate() {
 		$init = yourls_get_option('usrv_init');
 		if ($init !== false) {
 			yourls_delete_option('usrv_init');
-			$table = "usrv";
+			$table = YOURLS_DB_PREFIX . 'usrv';
 			$sql = "DROP TABLE IF EXISTS $table";
 			$ydb->fetchAffected($sql);
 		}
