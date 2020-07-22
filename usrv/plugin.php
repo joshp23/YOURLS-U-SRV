@@ -3,7 +3,7 @@
 Plugin Name: U-SRV
 Plugin URI: https://github.com/joshp23/YOURLS-U-SRV
 Description: A universal file server for YOURLS
-Version: 2.1.1
+Version: 2.2.0
 Author: Josh Panter
 Author URI: https://unfettered.net
 */
@@ -371,6 +371,22 @@ function usrv_exclude( $request ) {
  *
  *
 */
+// temporary update DB script
+yourls_add_action( 'plugins_loaded', 'usrv_update_DB' );
+function usrv_update_DB () {
+	global $ydb;
+	$table = 'usrv';
+    	$sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES
+    		WHERE TABLE_NAME = '".$table."'
+    		AND ENGINE = 'MyISAM' LIMIT 1";
+	$results = $ydb->fetchObjects($sql);
+	if($results) {
+		foreach( $results as $result ) {
+			$fix = "ALTER TABLE `".$table."` ENGINE = INNODB;";
+			$ydb->fetchAffected($fix);
+		}
+	}
+}
 // Create tables for this plugin when activated
 yourls_add_action( 'activated_usrv/plugin.php', 'usrv_activated' );
 function usrv_activated() {
@@ -387,13 +403,9 @@ function usrv_activated() {
 		$table_usrv .= "name varchar(200) NOT NULL, ";
 		$table_usrv .= "hashname varchar(200), ";
 		$table_usrv .= "PRIMARY KEY (name) ";
-		$table_usrv .= ") ENGINE=MyISAM DEFAULT CHARSET=latin1;";
+		$table_usrv .= ") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
 
-		if (version_compare(YOURLS_VERSION, '1.7.3') >= 0) {
-			$tables = $ydb->fetchAffected($table_usrv);
-		} else {
-			$tables = $ydb->query($table_usrv);
-		}
+		$tables = $ydb->fetchAffected($table_usrv);
 
 		yourls_update_option('usrv_init', time());
 		$init = yourls_get_option('usrv_init');
@@ -433,12 +445,8 @@ function usrv_deactivate() {
 		if ($init !== false) {
 			yourls_delete_option('usrv_init');
 			$table = "usrv";
-			if (version_compare(YOURLS_VERSION, '1.7.3') >= 0) {
-				$sql = "DROP TABLE IF EXISTS $table";
-				$ydb->fetchAffected($sql);
-			} else {
-				$ydb->query("DROP TABLE IF EXISTS $table");
-			}
+			$sql = "DROP TABLE IF EXISTS $table";
+			$ydb->fetchAffected($sql);
 		}
 		// purge cache
 		if (file_exists($dir)) {
