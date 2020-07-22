@@ -7,7 +7,6 @@ Version: 2.3.1
 Author: Josh Panter
 Author URI: https://unfettered.net
 */
-define( 'USRV_DB_UPDATE', false );
 // No direct call
 if( !defined( 'YOURLS_ABSPATH' ) ) die();
 
@@ -372,6 +371,9 @@ function usrv_exclude( $request ) {
  *
 */
 // temporary update DB script
+
+if (!defined( 'USRV_DB_UPDATE' ))
+	define( 'USRV_DB_UPDATE', false );
 if ( USRV_DB_UPDATE ) 
 	yourls_add_action( 'plugins_loaded', 'usrv_update_DB' );
 function usrv_update_DB () {

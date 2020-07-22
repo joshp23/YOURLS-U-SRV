@@ -83,7 +83,7 @@ To add a new filetype, just add a new case to the Mime Types section of `srv.php
 	  	SSLRenegBufferSize 10486000
 </location>
 ```
-- set `define( 'USRV_DB_UPDATE', false );` to `true` to update DB from versions earlier than 1.5.0
+- set `define( 'USRV_DB_UPDATE', true );` in `config.php` in order to update DB from versions earlier than 1.5.0. After one page load delte this option.
 ## Plugins using this script
 * [YOURLS-Snapshot](https://github.com/joshp23/YOURLS-Snapshot) - To serve images
 * [YOURLS-IQRCodes](https://github.com/joshp23/YOURLS-IQRCodes) - To serve code images
