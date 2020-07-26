@@ -3,7 +3,7 @@
 Plugin Name: U-SRV
 Plugin URI: https://github.com/joshp23/YOURLS-U-SRV
 Description: A universal file server for YOURLS
-Version: 2.3.1
+Version: 2.3.2
 Author: Josh Panter
 Author URI: https://unfettered.net
 */
@@ -116,7 +116,7 @@ HTML;
 					<h3>Checks</h3>
 					<p>SRV.php: 
 HTML;
-	$srvLoc = YOURLS_ABSPATH.'/user/pages/srv.php';
+	$srvLoc = YOURLS_PAGEDIR.'/srv.php';
 	if ( !file_exists( $srvLoc ) ) {
  		echo '<font color="red">srv.php is not in the "pages" directory!</font>';
 	} else { 
@@ -257,12 +257,12 @@ function usrv_form_0() {
 function usrv_get_opts() {
 
 	// Check DB
-	$CACHE_DIR 	= yourls_get_option('usrv_cache_loc');
-	$afterlife	= yourls_get_option('usrv_afterlife');
+	$CACHE_DIR = yourls_get_option('usrv_cache_loc');
+	$afterlife = yourls_get_option('usrv_afterlife');
 	
 	// Set defaults
-	if ($CACHE_DIR 	== null) $CACHE_DIR	= dirname(YOURLS_ABSPATH)."/YOURLS_CACHE";
-	if ($afterlife  == null) $afterlife	= 'preserve';
+	if ($CACHE_DIR == null) $CACHE_DIR = dirname(YOURLS_ABSPATH)."/YOURLS_CACHE";
+	if ($afterlife == null) $afterlife = 'preserve';
 	
 	// Return values
 	return array(
@@ -282,7 +282,7 @@ function usrv_fu() {
 	$cache  = $opt[0];
 
 	$fuName = pathinfo($_FILES['usrv_fu']['name'], PATHINFO_BASENAME);
-    $fuSave = md5('usrv_files'.$fuName).".zip";
+    	$fuSave = md5('usrv_files'.$fuName).".zip";
 	$fuPath = $cache."/fu/".$fuSave;
 	$tmpName = $_FILES['usrv_fu']['tmp_name'];
 
@@ -313,7 +313,7 @@ function usrv_fu() {
 // Delete UL file
 function usrv_delete( $fn ) {
 
-    $opt  	 = usrv_get_opts();
+    	$opt 	  = usrv_get_opts();
 	$filepath = $opt[0].'/fu/'.$fn;
 
 	if ( file_exists( $filepath ))
@@ -322,7 +322,7 @@ function usrv_delete( $fn ) {
 	global $ydb;
 	$table = YOURLS_DB_PREFIX . 'usrv';
 	$binds = array('hashname' => $fn);
-	$sql = "DELETE FROM `$table`  WHERE hashname=:hashname";
+	$sql   = "DELETE FROM `$table`  WHERE hashname=:hashname";
 	$delete = $ydb->fetchAffected($sql, $binds);
 
 }
@@ -384,7 +384,7 @@ function usrv_update_DB () {
 			$sql = "DESCRIBE `".YOURLS_DB_PREFIX . $table."`";
 			$fix = $ydb->fetchAffected($sql);
 		} catch (PDOException $e) {
-			$sql = "RENAME TABLE `".$table."` TO  `".YOURLS_DB_PREFIX.$table."`";
+			$sql = "RENAME TABLE `".$table."` TO  `".YOURLS_DB_PREFIX . $table . "`";
 			$fix = $ydb->fetchAffected($sql);
 		}
 		
@@ -429,7 +429,7 @@ function usrv_activated() {
 	}
 	
 	// put SRV in place
-	$srvLoc = YOURLS_ABSPATH.'/user/pages/srv.php';
+	$srvLoc = YOURLS_PAGEDIR.'/srv.php';
 	if ( !file_exists( $srvLoc ) ) {
 		copy( 'assets/srv.php', $srvLoc );
 	} else { 
@@ -473,7 +473,7 @@ function usrv_deactivate() {
 		}
 	}
 	// remove srv.php
-	$srvLoc = YOURLS_ABSPATH.'/user/pages/srv.php';
+	$srvLoc = YOURLS_PAGEDIR.'/srv.php';
 	if ( file_exists( $srvLoc ) ) {
 		unlink( $srvLoc );
 	}

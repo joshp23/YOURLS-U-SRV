@@ -3,7 +3,7 @@
 Plugin Name: U-SRV | helper file
 Plugin URI: https://github.com/joshp23/YOURLS-U-SRV
 Description: A universal file server for YOURLS | This is the server
-Version: 2.3.1
+Version: 2.3.2
 Author: Josh Panter
 Author URI: https://unfettered.net
 */
@@ -76,7 +76,7 @@ switch ($id) {
 		break;
 
 	case 'snapshot':
-		$pfile = YOURLS_ABSPATH.'/user/plugins/snapshot/plugin.php';
+		$pfile = YOURLS_PLUGINDIR.'/snapshot/plugin.php';
 		$data = yourls_get_plugin_data( $pfile );
 		$ver = $data['Version'];
 		if (version_compare($ver, '3.0.0') >= 0) {
@@ -84,17 +84,17 @@ switch ($id) {
 			$path = $path.'/'.$dir;
 		} else {
 			$path = yourls_get_option('snapshot_cache_path');
-			if($path == null) $path = 'user/cache/preview';
+			if($path == null) $path = YOURLS_USERDIR. '/cache/preview';
 			$path = YOURLS_ABSPATH.'/'.$path;
 		}
 		break;
 		
 	case 'snapshot-alt':
-		$path = $path.'/user/plugins/snapshot/assets';
+		$path = YOURLS_PLUGINDIR.'/snapshot/assets';
 		break;
 		
 	case 'iqrcodes':
-		$pfile = YOURLS_ABSPATH.'/user/plugins/iqrcodes/plugin.php';
+		$pfile = YOURLS_PLUGINDIR.'/iqrcodes/plugin.php';
 		$data = yourls_get_plugin_data( $pfile );
 		$ver = $data['Version'];
 		if (version_compare($ver, '2.0.0') >= 0) {
@@ -102,7 +102,7 @@ switch ($id) {
 			$path = $path .'/'. $dir;
 		} else {
 			$path = yourls_get_option('iqrcodes_cache_loc');
-			if($path == null) $path = 'user/cache/qr';
+			if($path == null) $path = YOURLS_USERDIR. '/cache/qr';
 			$path = YOURLS_ABSPATH.'/'.$path;
 		}
 		break;
