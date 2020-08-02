@@ -3,7 +3,7 @@
 Plugin Name: U-SRV
 Plugin URI: https://github.com/joshp23/YOURLS-U-SRV
 Description: A universal file server for YOURLS
-Version: 2.3.2
+Version: 2.3.3
 Author: Josh Panter
 Author URI: https://unfettered.net
 */
@@ -377,6 +377,7 @@ if (!defined( 'USRV_DB_UPDATE' ))
 if ( USRV_DB_UPDATE ) 
 	yourls_add_action( 'plugins_loaded', 'usrv_update_DB' );
 function usrv_update_DB () {
+	yourls_delete_option('usrv_init');
 	global $ydb;
 	$table = 'usrv';
 	if ( YOURLS_DB_PREFIX ) {
@@ -397,8 +398,8 @@ function usrv_update_DB () {
 	    		AND ENGINE = 'INNODB' LIMIT 1";
 	    	$fix = $ydb->fetchAffected($sql);
     	} catch (PDOException $e) {
-		$sql = "ALTER TABLE `".$table."` ENGINE = INNODB;";
-		$fix = $ydb->fetchAffected($sql);
+			$sql = "ALTER TABLE `".$table."` ENGINE = INNODB;";
+			$fix = $ydb->fetchAffected($sql);
 	}
 }
 // Create tables for this plugin when activated
@@ -407,31 +408,20 @@ function usrv_activated() {
 	
 	// Managae Databases
 	global $ydb;
+	$table_name = YOURLS_DB_PREFIX . "usrv";
+	// Create the U-SRV table
+	$table_usrv  = "CREATE TABLE IF NOT EXISTS ".$table_name." (";
+	$table_usrv .= "name varchar(200) NOT NULL, ";
+	$table_usrv .= "hashname varchar(200), ";
+	$table_usrv .= "PRIMARY KEY (name) ";
+	$table_usrv .= ") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
 
-	$init = yourls_get_option('usrv_init');
-	if ($init === false) {
-		// Create the init value
-		yourls_add_option('usrv_init', time());
-		// Create the U-SRV table
-		$table_usrv  = "CREATE TABLE IF NOT EXISTS usrv (";
-		$table_usrv .= "name varchar(200) NOT NULL, ";
-		$table_usrv .= "hashname varchar(200), ";
-		$table_usrv .= "PRIMARY KEY (name) ";
-		$table_usrv .= ") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
-
-		$tables = $ydb->fetchAffected($table_usrv);
-
-		yourls_update_option('usrv_init', time());
-		$init = yourls_get_option('usrv_init');
-		if ($init === false) {
-			die("Unable to properly enable U-SRV due an apparent problem with the database.");
-		}
-	}
+	$tables = $ydb->fetchAffected($table_usrv);
 	
 	// put SRV in place
 	$srvLoc = YOURLS_PAGEDIR.'/srv.php';
 	if ( !file_exists( $srvLoc ) ) {
-		copy( 'assets/srv.php', $srvLoc );
+		copy( YOURLS_PLUGINDIR . '/usrv/assets/srv.php', $srvLoc );
 	} else { 
 		$thisFile = dirname( __FILE__ )."/plugin.php";
 		$thisData = yourls_get_plugin_data( $thisFile );
@@ -439,7 +429,7 @@ function usrv_activated() {
 		$thatData = yourls_get_plugin_data( $srvLoc );
 		$thatV = $thatData['Version'];
 		$status = version_compare($thisV, $thatV);
-		if($status === 1 ) copy( 'assets/srv.php', $srvLoc );
+		if($status === 1 ) copy( YOURLS_PLUGINDIR. '/usrv/assets/srv.php', $srvLoc );
 	}
 
 	$opt = usrv_get_opts();
@@ -455,13 +445,9 @@ function usrv_deactivate() {
 	if($opt[1] == 'delete') {
 		// Delete table
 		global $ydb;
-		$init = yourls_get_option('usrv_init');
-		if ($init !== false) {
-			yourls_delete_option('usrv_init');
-			$table = YOURLS_DB_PREFIX . 'usrv';
-			$sql = "DROP TABLE IF EXISTS $table";
-			$ydb->fetchAffected($sql);
-		}
+		$table = YOURLS_DB_PREFIX . 'usrv';
+		$sql = "DROP TABLE IF EXISTS $table";
+		$ydb->fetchAffected($sql);
 		// purge cache
 		if (file_exists($dir)) {
 			foreach (new DirectoryIterator($dir) as $fileInfo) {

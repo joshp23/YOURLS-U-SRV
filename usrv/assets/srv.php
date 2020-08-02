@@ -3,7 +3,7 @@
 Plugin Name: U-SRV | helper file
 Plugin URI: https://github.com/joshp23/YOURLS-U-SRV
 Description: A universal file server for YOURLS | This is the server
-Version: 2.3.2
+Version: 2.3.3
 Author: Josh Panter
 Author URI: https://unfettered.net
 */
