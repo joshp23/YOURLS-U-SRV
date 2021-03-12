@@ -134,6 +134,8 @@ if($ctype == "pronk") die('file type not supported, please check your configurat
 header('Content-type: ' . $ctype);					// send the correct headers
 header('Expires: 0');								// .
 header('Content-Length: ' . filesize($file));		// .
+ob_clean();											// .
+flush();  											// .
 readfile($file);									// with the file data
 exit;
 ?>
