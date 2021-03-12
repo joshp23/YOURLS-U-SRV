@@ -58,7 +58,7 @@ if($lock !== $key) die('FAIL: bad access key');
  *			$path = yourls_get_option('ID_VALUE_usrv_loc');
  *			break;
  *
- *	Ex. In this example the filepath is just strored here:
+ *	Ex. In this example the filepath is just stored here:
  *	
  * 		case 'ID_VALUE':
  *			$path = '/path/to/your/files/');
@@ -74,39 +74,17 @@ switch ($id) {
 	case 'usrv_files':
 		$path = $path.'/fu';
 		break;
-
 	case 'snapshot':
-		$pfile = YOURLS_PLUGINDIR.'/snapshot/plugin.php';
-		$data = yourls_get_plugin_data( $pfile );
-		$ver = $data['Version'];
-		if (version_compare($ver, '3.0.0') >= 0) {
-			if($dir == null) $dir = 'preview';
-			$path = $path.'/'.$dir;
-		} else {
-			$path = yourls_get_option('snapshot_cache_path');
-			if($path == null) $path = YOURLS_USERDIR. '/cache/preview';
-			$path = YOURLS_ABSPATH.'/'.$path;
-		}
+		if($dir == null) $dir = 'preview';
+		$path = $path.'/'.$dir;
 		break;
-		
 	case 'snapshot-alt':
 		$path = YOURLS_PLUGINDIR.'/snapshot/assets';
 		break;
-		
 	case 'iqrcodes':
-		$pfile = YOURLS_PLUGINDIR.'/iqrcodes/plugin.php';
-		$data = yourls_get_plugin_data( $pfile );
-		$ver = $data['Version'];
-		if (version_compare($ver, '2.0.0') >= 0) {
-			if($dir == null) $dir = 'qr';
-			$path = $path .'/'. $dir;
-		} else {
-			$path = yourls_get_option('iqrcodes_cache_loc');
-			if($path == null) $path = YOURLS_USERDIR. '/cache/qr';
-			$path = YOURLS_ABSPATH.'/'.$path;
-		}
+		if($dir == null) $dir = 'qr';
+		$path = $path .'/'. $dir;
 		break;
-		
 	default:
 		$path = $path.'/'.$dir;
 }
