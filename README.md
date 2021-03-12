@@ -74,7 +74,7 @@ To add a new filetype, just add a new case to the Mime Types section of `srv.php
 
 ### Use NOTES:
 * Compatability with YOURLS 1.7.9 + (tested against [this](https://github.com/YOURLS/YOURLS/commit/cab0c150a0ce2b0f8775a029c6b47fa98d69598b) commit)
-* v2.0.0 and on is a complete rewrite. It is still backwards compatible with plugins that have not yet been updated.
+* v2.0.0 and on is a complete rewrite and is not backwards compatible. Update your plugins accordingly.
 * U-SRV is pre-configured for the default filetypes used by the YOURLS [IQRCodes](https://github.com/joshp23/YOURLS-IQRCodes) and [Snapshot Visual Preview](https://github.com/joshp23/YOURLS-Snapshot) plugins. 
 * As should be obviouse, this script can be easily modified for use outside of the YOURLS environment.
 * Increasing apache's SSL Renegotiation Buffer Size may save you a headache. Simply add something like the following to the host file:
